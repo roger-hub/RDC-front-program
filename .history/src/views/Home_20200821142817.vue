@@ -1,0 +1,62 @@
+<template class="clearfix">
+  <div class="home">
+    <TopBar/>
+    <Aside class="aside"/>
+    <div class="right clearfix">
+      <img src="../assets/logo.png" alt="">
+      <div>Welcome!</div>
+      <div>Here is RDC.</div>
+      <div>Reasearch and Development Center.</div>
+    </div>
+  </div>
+</template>
+
+<script>
+// @ is an alias to /src
+import Aside from '@/components/Aside.vue'
+import TopBar from '@/components/TopBar.vue'
+
+export default {
+  name: 'Home',
+  components: {
+    Aside,
+    TopBar
+  }
+}
+</script>
+
+<style scoped>
+.home{
+  height: 100%;
+  background: #ccc;
+}
+
+.aside{
+  width: 20%;
+  height: 100%;
+  float: left;
+}
+
+.right{
+  width:80%;
+  float: right;
+}
+
+.router{
+  height: 100%;
+}
+
+img{
+  display: block;
+  width: 300px;
+  margin: 50px auto;
+}
+
+.right div{
+  display: table;
+  margin: 0 auto;
+  font-size: 25px;
+  font-family: 方正粗圆简体;
+  font-weight: bolder;
+}
+</style>
