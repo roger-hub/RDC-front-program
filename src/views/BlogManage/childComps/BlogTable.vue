@@ -5,7 +5,8 @@
         border
         resizable
         auto-resize
-        height="90%"
+        height="425px"
+        size="medium"
         highlight-hover-row
         :loading="loading"
         :data="tableData"
@@ -18,16 +19,19 @@
           width="350"
         ></vxe-table-column>
         <vxe-table-column
+          show-overflow="ellipsis"
           field="class_"
           title="分类"
           width="160"
         ></vxe-table-column>
         <vxe-table-column
+          show-overflow="ellipsis"
           field="time"
           title="时间"
           width="180"
         ></vxe-table-column>
         <vxe-table-column
+          show-overflow="ellipsis"
           field="author"
           title="作者"
           width="150"
@@ -35,7 +39,6 @@
 
         <vxe-table-column title="操作" fixed="right" width="200">
           <template v-slot>
-            <el-button type="primary" size="mini" plain>查看</el-button>
             <el-button
               type="danger"
               size="mini"
@@ -74,7 +77,8 @@ export default {
       totalNum: 10,
       around: '外',
       dir: '',
-      currentId: ''
+      currentId: '',
+      searchWord: ''
     }
   },
   created() {
@@ -82,7 +86,25 @@ export default {
     this.refreshPage()
   },
   mounted() {
-    BlogManageBus.$on('refreshCurrentPage', res => this.refreshPage())
+    //刷新当前页
+    BlogManageBus.$on('refreshCurrentPage', res => {
+      this.refreshPage()
+    }),
+      //处理搜索函数
+      BlogManageBus.$on('handleSearch', res => {
+        this.searchWord = res
+        this.getTotaLNum()
+        this.refreshPage()
+      }),
+      //处理内部博客外部博客的切换问题
+      BlogManageBus.$on('refreshAround', res => {
+        //初始化
+        this.currentPage = 0;
+        this.searchWord = ''
+        this.around = res;
+        this.getTotaLNum();
+        this.refreshPage()
+      })
   },
   methods: {
     deleteBlog() {
@@ -92,6 +114,7 @@ export default {
         })
         .then(res => {
           this.refreshPage()
+          this.getTotaLNum()
         })
     },
     getTotaLNum() {
@@ -99,7 +122,9 @@ export default {
         .post('/api/blog/get', {
           around: this.around,
           class_: this.dir,
-          count: '1'
+          title: this.searchWord,
+          count: '1',
+          pNum: "8"
         })
         .then(res => {
           this.totalNum = res.data
@@ -112,7 +137,9 @@ export default {
         .post('/api/blog/get', {
           around: this.around,
           class_: this.dir,
-          page: this.currentPage
+          title: this.searchWord,
+          page: this.currentPage,
+          pNum: "8"
         })
         .then(res => {
           this.loading = false
@@ -127,7 +154,7 @@ export default {
     },
     throttle(handler, wait) {
       var lastTime = 0
-      return function() {
+      return function () {
         var nowTime = new Date().getTime()
         if (nowTime - lastTime > wait) {
           handler.apply(this, arguments)
@@ -137,11 +164,24 @@ export default {
     },
     removeEvent(row) {
       this.currentId = row.path[3].firstChild.firstChild.firstChild.innerHTML
-      this.$XModal.confirm('您确定要删除该数据?').then(type => {
-        if (type === 'confirm') {
-          this.deleteBlog()
-        }
-      })
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+        this.deleteBlog()
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 }
@@ -168,7 +208,7 @@ export default {
   margin-left: auto;
 }
 
-.vxe-modal--footer button{
+.vxe-modal--footer button {
   display: inline-block;
 }
 </style>
