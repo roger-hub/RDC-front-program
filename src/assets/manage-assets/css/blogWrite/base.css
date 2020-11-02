@@ -1,0 +1,66 @@
+@import './normallize.css';
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.clearfix::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+li {
+    list-style: none;
+}
+
+
+body {
+    font-size: 14px;
+    font-family: Microsoft YaHei sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    font-weight: 400;
+}
+
+::selection {
+    background-color: #1693c0;
+    color: #fff;
+}
+
+input:focus {
+    outline: none;
+    /* border: none; */
+}
+
+button {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    line-height: inherit;
+    height: 100rpx;
+    border-radius: 0;
+    border: none;
+    font-size: 60rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+}
+
+button::after {
+    border: none;
+}
