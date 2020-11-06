@@ -1,5 +1,5 @@
 <template>
-<div>
+<div id="blog-wrapper">
     <div id="blog-header">
         <div class="container">
             <div class="blog-tit fl">
@@ -64,7 +64,9 @@ export default {
 
 <style scoped>
 @import url("../assets/css/blog_details/base.css");
-@import url("../assets/css/blog_details/sspai.css");
+#blog-wrapper{
+    background-color: #efefef;
+}
 
 .container {
     display: flex;

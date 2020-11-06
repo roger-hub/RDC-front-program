@@ -12,71 +12,23 @@
 
         <div class="info_right">
             <div class="time">发布时间：{{ blog.time }}</div>
-
-            <!-- <div class="tag_container">
-                    <div class="tag_tip">博客标签：</div>
-                    <ul class="tag_list">
-                        <li class="list_child">前端开发</li>
-                        <li class="list_child">JavaScript</li>
-                    </ul>
-        </div>-->
         </div>
     </div>
 
     <!-- 博客内容 -->
     <div class="blog_content" v-html="blog.content">
-        <!--<h1 class="h1_title con_child con_title">这是h1</h1>
-            <h2 class="h2_title con_child con_title">这是h2</h2>
-            <h3 class="h3_title con_child con_title">这是h3</h3>
-            <h4 class="h4_title con_child con_title">这是h4</h4>
-            <h5 class="h5_title con_child con_title">这是h5</h5>
-            <h6 class="h6_title con_child con_title">这是h6</h6>
-            <p class="content con_child">
-                正文正文正文正文正文正文正文
-                正文正文正文正文正文正文正文
-                正文正文正文正文正文正文正文
-                正文正文正文正文正文正文正文
-                正文正文正文正文正文正文正文
-                正文正文正文正文正文正文正文
-                正文正文正文正文正文正文正文
-                <a href="" class="hyperlink con_child">超链接</a>
-            </p>
-            <div class="reference con_child">引用引用引用</div>
-            <div class="pic con_child">
-                <img src="" alt="">
-            </div>
-
-             代码片段 
-            <pre class="code con_child">
-        &lt;h1 class="h1_title con_child con_title"&gt;这是h1&lt;/h1&gt;
-        &lt;h2 class="h2_title con_child con_title"&gt;这是h2&lt;/h2&gt;
-        &lt;h3 class="h3_title con_child con_title"&gt;这是h3&lt;/h3&gt;
-        &lt;h4 class="h4_title con_child con_title"&gt;这是h4&lt;/h4&gt;
-        &lt;h5 class="h5_title con_child con_title"&gt;这是h5&lt;/h5&gt;
-        &lt;h6 class="h6_title con_child con_title"&gt;这是h6&lt;/h6&gt;</pre>
-                
-            <div class="same_point con_child">
-                <p>同级分点</p>
-                <p>同级分点</p>
-            </div>
-    
-            <div class="sequence_point con_child">
-                <p>1. 顺序分点</p>
-                <p>2. 顺序分点</p>
-            </div>
-
-            <span class="prominent con_child">突出显示</span>
-      <span class="italic con_child">斜体</span>-->
     </div>
 </div>
 </template>
 
 <script>
 import eventBus from "@/common/Bus";
+import "../../assets/css/blog_details/sspai.css";
+
 export default {
     name: "blogMain",
     components: {},
-    props: ["blogId"],
+    // props: ["blogId"],
 
     data() {
         return {
@@ -95,6 +47,36 @@ export default {
         };
     },
     methods: {
+        // 点进详情页面，向服务器发送请求博客详情内容
+        getBlogDetail: function (){
+            this.$axios
+            .post("/first/blog/get", {
+                id: this.blogId,
+            },{timeout: 10000})
+            .then((res) => {
+                this.fullscreenLoading = false;
+
+                let info = res.data[0];
+
+                this.blog.id = info.id;
+                this.blog.class = info.class_[0];
+                this.blog.author = info.author;
+                this.blog.content = info.content;
+                this.blog.time = info.time;
+                this.blog.title = info.title;
+                this.blog.url = info.url;
+
+                this.changeFrom(info.around, info.class_, info.url);
+            })
+            .then((res) => {
+                let prettyprint = document.getElementsByClassName("prettyprint");
+                let codeArr = document.getElementsByTagName("code");
+                this.prettyprintBGC(prettyprint, codeArr);
+            })
+            .catch(err=> {
+                console.log(err);
+            });
+        },
         // 改变博客来源，参数：内/外部博客，方向，博客原文地址
         changeFrom: function (around, class_, blogUrl) {
             if (around == "内") {
@@ -118,7 +100,6 @@ export default {
         // 改变博客详情页内容,通过点击其他博客，自定义事件的方式来传递博客id参数，并调用后台接口
         changeBlog: function () {
             eventBus.$on("changeBlogDetail", (blogId) => {
-                console.log(blogId);
                 this.$router.push({
                     query: {
                         id: blogId,
@@ -152,31 +133,8 @@ export default {
     },
 
     mounted() {
-        this.$axios
-            .post("/first/blog/get", {
-                id: this.blogId,
-            })
-            .then((res) => {
-                this.fullscreenLoading = false;
-
-                let info = res.data[0];
-                console.log(info);
-
-                this.blog.id = info.id;
-                this.blog.class = info.class_[0];
-                this.blog.author = info.author;
-                this.blog.content = info.content;
-                this.blog.time = info.time;
-                this.blog.title = info.title;
-                this.blog.url = info.url;
-
-                this.changeFrom(info.around, info.class_, info.url);
-            })
-            .then((res) => {
-                let prettyprint = document.getElementsByClassName("prettyprint");
-                let codeArr = document.getElementsByTagName("code");
-                this.prettyprintBGC(prettyprint, codeArr);
-            });
+        this.blogId = this.$route.query.id;
+        this.getBlogDetail();
     },
 
     created() {
@@ -186,6 +144,9 @@ export default {
 </script>
 
 <style scoped>
+@import url("../../assets/css/blog_details/base.css");
+/* @import url("../../assets/css/blog_details/sspai.css"); */
+
 .main {
     width: 950px;
     background-color: #fff;
@@ -195,6 +156,7 @@ export default {
     color: #333;
     overflow: hidden;
 }
+
 
 h1.title {
     color: #0d6aad;

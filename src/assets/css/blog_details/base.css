@@ -66,3 +66,7 @@ button {
 button::after {
     border: none;
 }
+
+ul{
+    padding: 0;
+}

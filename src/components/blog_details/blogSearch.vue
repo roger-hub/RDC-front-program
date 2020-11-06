@@ -19,6 +19,7 @@ export default {
 </script>
 
 <style scoped>
+  @import url("../../assets/css/blog_details/base.css");
 .search_container {
   width: 320px;
   height: 36px;

@@ -163,6 +163,7 @@ export default {
 </script>
 
 <style scoped>
+@import url("../../assets/css/blog_details/base.css");
 .book_container {
     width: 280px;
     border-radius: 5px;
@@ -192,6 +193,10 @@ i.blog_icon {
 .book_top span {
     font-size: 18px;
     color: #0d6aad;
+}
+
+.book_list{
+    padding: 0;
 }
 
 .direction {
@@ -262,7 +267,6 @@ i.blog_icon {
 .book_info {
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
 .book_left img {

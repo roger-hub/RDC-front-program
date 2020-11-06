@@ -107,6 +107,7 @@ export default {
 </script>
 
 <style scoped>
+    @import url("../../assets/css/blog_details/base.css");
 .blog_other_container {
     width: 280px;
     border-radius: 5px;
@@ -203,6 +204,7 @@ i.blog_icon {
 
 .blog_list {
     margin: 30px 0;
+    padding: 0;
 }
 
 .list_child {
@@ -253,12 +255,16 @@ i.go {
 
 .view_more {
     position: absolute;
-    bottom: 20px;
+    bottom: 15px;
     right: 42px;
     color: #1693C0;
 }
 
-.view_more:active {
+.view_more span{
+    color: #1693C0;
+}
+
+.view_more span:active {
     color: #0d6aad;
 }
 
